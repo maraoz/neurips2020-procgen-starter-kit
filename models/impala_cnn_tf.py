@@ -40,7 +40,7 @@ class ImpalaCNN(TFModelV2):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
-        depths = [16, 32, 32]
+        depths = [16, 32, 64, 128]#, 128, 256]
 
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         scaled_inputs = tf.cast(inputs, tf.float32) / 255.0
@@ -51,9 +51,14 @@ class ImpalaCNN(TFModelV2):
 
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
+
+        #x = tf.keras.layers.TimeDistributed(x)
+        #x = tf.keras.layers.LSTM(256)(x)
+
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
+
         self.base_model = tf.keras.Model(inputs, [logits, value])
         self.register_variables(self.base_model.variables)
 

@@ -133,60 +133,6 @@ procgen-ppo:
         ################################################
         ################################################
         model:
-            # These options are used when not using a custom model, to use a default model,
-            # comment out the `custom_model` field and then un-comment the below model options.
-
-            # === Built-in options ===
-            # More information on built in Models are available here :
-            # https://ray.readthedocs.io/en/stable/rllib-models.html#built-in-models-and-preprocessors
-            #
-            # Filter config. List of [out_channels, kernel, stride] for each filter
-            # conv_filters: null
-            # Nonlinearity for built-in convnet
-            # conv_activation: relu
-            # Nonlinearity for fully connected net (tanh, relu)
-            # fcnet_activation: tanh
-            # Number of hidden layers for fully connected net
-            # fcnet_hiddens: [256, 256]
-            # Whether to skip the final linear layer used to resize the hidden layer
-            # outputs to size `num_outputs`. If True, then the last hidden layer
-            # should already match num_outputs.
-            # no_final_linear: false
-            # Whether layers should be shared for the value function
-            # vf_share_layers: true
-
-            # == LSTM ==
-            # Whether to wrap the model with a LSTM
-            # use_lstm: false
-            # Max seq len for training the LSTM, defaults to 20
-            # max_seq_len: 20
-            # Size of the LSTM cell
-            # lstm_cell_size: 256
-            # Whether to feed a_{t-1}, r_{t-1} to LSTM
-            # lstm_use_prev_action_reward: false
-            # When using modelv1 models with a modelv2 algorithm, you may have to
-            # define the state shape here (e.g., [256, 256]).
-            # state_shape: null
-
-            # === Options for custom models ===
-            # Name of a custom model to use
-            #
-            # Custom Models can be implemented in the models/ folder.
-            # Please refer to :
-            #   https://github.com/AIcrowd/neurips2020-procgen-starter-kit/blob/master/models/my_vision_network.py
-            #  for an example.
-            #
-            # RLlib documentation on implementing custom Models is available
-            # here :
-            # https://ray.readthedocs.io/en/stable/rllib-models.html#custom-models-tensorflow
-            #
-            # Participants can also choose to implement their models
-            # in PyTorch. Here is an example to implement a PyTorch based model :
-            # https://github.com/ray-project/ray/blob/master/rllib/examples/custom_torch_policy.py
-            #
-            # Examples of implementing the model in Keras is also available
-            # here :
-            # https://github.com/ray-project/ray/blob/master/rllib/examples/custom_keras_model.py
             custom_model: impala_cnn_tf
             # Extra options to pass to custom class
             custom_options: {}
@@ -238,7 +184,7 @@ procgen-ppo:
         # Number of GPUs to allocate per worker. This can be fractional. This is
         # usually needed only if your env itself requires a GPU (i.e., it is a
         # GPU-intensive video game), or model inference is unusually expensive.
-        num_gpus_per_worker: 0
+        num_gpus_per_worker: 0.1
         # Number of CPUs to allocate for the trainer. Note: this only takes effect
         # when running in Tune. Otherwise, the trainer runs in the main program.
         num_cpus_for_driver: 1
@@ -252,7 +198,7 @@ procgen-ppo:
         # algorithms can take advantage of trainer GPUs. This can be fractional
         # (e.g., 0.3 GPUs).
         # Note : If GPUs are not available, this will be overriden by the AIcrowd evaluators to 0.
-        num_gpus: 0
+        num_gpus: 0.3
 
         ################################################
         ################################################
