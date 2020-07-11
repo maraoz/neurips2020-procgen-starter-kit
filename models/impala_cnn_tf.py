@@ -49,7 +49,7 @@ class ImpalaCNN(TFModelV2):
 #            x = conv_sequence(x, depth, prefix=f"seq{i}")
 
         x = tf.keras.applications.resnet_v2.preprocess_input(x)
-        x = tf.keras.applications.ResNet50V2(
+        x = tf.keras.applications.ResNet152V2(
             include_top=False,
             weights="imagenet",
             # input_tensor=x,
@@ -68,7 +68,9 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden2")(x)
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden3")(x)
 
-        logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
+        x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name="pi-1")(x)
+        x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name="pi-2")(x)
+        logits = tf.keras.layers.Dense(units=num_outputs, name="pi-3")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
 
         self.base_model = tf.keras.Model(inputs, [logits, value])
