@@ -18,7 +18,7 @@ if [[ -z $AICROWD_IS_GRADING ]]; then
   export OUTPUTS_DIR=./outputs
   export RAY_MEMORY_LIMIT=1500000000
   export RAY_CPUS=8
-  export RAY_GPUS=1
+  export RAY_GPUS=0
   export RAY_STORE_MEMORY=1000000000
 
   # Cleaning output directory between multiple runs
@@ -86,7 +86,7 @@ if [[ " $@ " =~ " --rollout " ]]; then
   fi
   echo "Rollout with checkpoint: $CHECKPOINT"
   echo "Executing: python ./rollout.py $CHECKPOINT --episodes ${EPISODES:-5} --run $ROLLOUT_RUN --env $ROLLOUT_ENV"
-  python ./rollout.py $CHECKPOINT --episodes ${EPISODES:-5} --run $ROLLOUT_RUN --env $ROLLOUT_ENV --video-dir "./video"
+  python ./rollout.py $CHECKPOINT --episodes ${EPISODES:-5} --run $ROLLOUT_RUN --env $ROLLOUT_ENV 
   STATUS_CODE=$?
 fi
 

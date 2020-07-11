@@ -28,6 +28,11 @@ def conv_sequence(x, depth, prefix):
     x = residual_block(x, depth, prefix=prefix + "_block1")
     return x
 
+def conv_core(x):
+    depths = [16, 32, 64, 128]#, 128, 256]
+    for i, depth in enumerate(depths):
+        x = conv_sequence(x, depth, prefix=f"seq{i}")
+    return x
 
 class ImpalaCNN(TFModelV2):
     """
@@ -40,20 +45,17 @@ class ImpalaCNN(TFModelV2):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
-        depths = [16, 32, 64, 128]#, 128, 256]
 
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = tf.cast(inputs, tf.float32) / 255.0
 
-#        for i, depth in enumerate(depths):
-#            x = conv_sequence(x, depth, prefix=f"seq{i}")
+        # manual conv core
+        # x = conv_core(x)
 
         x = tf.keras.applications.resnet_v2.preprocess_input(x)
-        x = tf.keras.applications.ResNet152V2(
+        x = tf.keras.applications.ResNet50V2(
             include_top=False,
             weights="imagenet",
-            # input_tensor=x,
-            # input_shape=x.shape,
             pooling=None
         )(x)
         x.trainable = False
@@ -64,14 +66,16 @@ class ImpalaCNN(TFModelV2):
         # x = tf.keras.layers.TimeDistributed(x)
         # x = tf.keras.layers.LSTM(256)(x)
 
-        # 3 dense 256x256
-        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
-        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden2")(x)
-        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden3")(x)
+        # n256 dense 256x256
+        n256 = 2
+        for i in range(n256):
+            x = tf.keras.layers.Dense(
+                    units=256, activation="relu", name=f"hidden-{i}")(x)
 
-        # 3 dense 4x4
-        x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name="pi-1")(x)
-        x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name="pi-2")(x)
+        # n4 dense 4x4
+        n4 = 2
+        for i in range(n4):
+            x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name=f"pi-{i}")(x)
         logits = tf.keras.layers.Dense(units=num_outputs, name="pi-3")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
 
