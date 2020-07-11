@@ -17,7 +17,8 @@ if [[ -z $AICROWD_IS_GRADING ]]; then
 
   export OUTPUTS_DIR=./outputs
   export RAY_MEMORY_LIMIT=1500000000
-  export RAY_CPUS=2
+  export RAY_CPUS=8
+  export RAY_GPUS=1
   export RAY_STORE_MEMORY=1000000000
 
   # Cleaning output directory between multiple runs
@@ -69,8 +70,8 @@ print_banner
 
 if [[ " $@ " =~ " --train " ]]; then
   export VALID_RUN=true
-  echo "Executing: python train.py -f ${EXPERIMENT} --ray-memory ${RAY_MEMORY_LIMIT:-1500000000} --ray-num-cpus ${RAY_CPUS:-2} --ray-object-store-memory ${RAY_STORE_MEMORY:-1000000000}"
-  python train.py -f ${EXPERIMENT} --ray-memory ${RAY_MEMORY_LIMIT:-1500000000} --ray-num-cpus ${RAY_CPUS:-2} --ray-object-store-memory ${RAY_STORE_MEMORY:-1000000000}
+  echo "Executing: python train.py -f ${EXPERIMENT} --ray-memory ${RAY_MEMORY_LIMIT:-1500000000} --ray-num-cpus ${RAY_CPUS:-2} --ray-object-store-memory ${RAY_STORE_MEMORY:-1000000000}" --ray-num-gpus ${RAY_GPUS:-1}
+  python train.py -f ${EXPERIMENT} --ray-memory ${RAY_MEMORY_LIMIT:-1500000000} --ray-num-cpus ${RAY_CPUS:-2} --ray-object-store-memory ${RAY_STORE_MEMORY:-1000000000} --ray-num-gpus ${RAY_GPUS:-1}
   STATUS_CODE=$?
 fi
 
@@ -85,7 +86,7 @@ if [[ " $@ " =~ " --rollout " ]]; then
   fi
   echo "Rollout with checkpoint: $CHECKPOINT"
   echo "Executing: python ./rollout.py $CHECKPOINT --episodes ${EPISODES:-5} --run $ROLLOUT_RUN --env $ROLLOUT_ENV"
-  python ./rollout.py $CHECKPOINT --episodes ${EPISODES:-5} --run $ROLLOUT_RUN --env $ROLLOUT_ENV
+  python ./rollout.py $CHECKPOINT --episodes ${EPISODES:-5} --run $ROLLOUT_RUN --env $ROLLOUT_ENV --video-dir "./video"
   STATUS_CODE=$?
 fi
 
