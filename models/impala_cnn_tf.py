@@ -64,10 +64,12 @@ class ImpalaCNN(TFModelV2):
         # x = tf.keras.layers.TimeDistributed(x)
         # x = tf.keras.layers.LSTM(256)(x)
 
+        # 3 dense 256x256
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden2")(x)
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden3")(x)
 
+        # 3 dense 4x4
         x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name="pi-1")(x)
         x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name="pi-2")(x)
         logits = tf.keras.layers.Dense(units=num_outputs, name="pi-3")(x)
