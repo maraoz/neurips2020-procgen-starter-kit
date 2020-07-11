@@ -43,23 +43,37 @@ class ImpalaCNN(TFModelV2):
         depths = [16, 32, 64, 128]#, 128, 256]
 
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
-        scaled_inputs = tf.cast(inputs, tf.float32) / 255.0
+        x = tf.cast(inputs, tf.float32) / 255.0
 
-        x = scaled_inputs
-        for i, depth in enumerate(depths):
-            x = conv_sequence(x, depth, prefix=f"seq{i}")
+#        for i, depth in enumerate(depths):
+#            x = conv_sequence(x, depth, prefix=f"seq{i}")
+
+        x = tf.keras.applications.resnet_v2.preprocess_input(x)
+        x = tf.keras.applications.ResNet50V2(
+            include_top=False,
+            weights="imagenet",
+            # input_tensor=x,
+            # input_shape=x.shape,
+            pooling=None
+        )(x)
+        x.trainable = False
 
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
 
-        #x = tf.keras.layers.TimeDistributed(x)
-        #x = tf.keras.layers.LSTM(256)(x)
+        # x = tf.keras.layers.TimeDistributed(x)
+        # x = tf.keras.layers.LSTM(256)(x)
 
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden2")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden3")(x)
+
         logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
 
         self.base_model = tf.keras.Model(inputs, [logits, value])
+        # Print model summary
+        # print(self.base_model.summary())
         self.register_variables(self.base_model.variables)
 
     def forward(self, input_dict, state, seq_lens):
