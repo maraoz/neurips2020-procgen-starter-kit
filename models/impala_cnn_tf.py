@@ -50,17 +50,23 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # manual conv core
-        x = conv_core(x)
+        #x = conv_core(x)
 
         # resnet core
-        #x = tf.keras.applications.resnet_v2.preprocess_input(x)
-        #x = tf.keras.applications.ResNet50V2(
-        #    include_top=False,
-        #    weights="imagenet",
-        #    pooling=None
-        #)(x)
-        #x.trainable = False
+        x = tf.keras.applications.resnet_v2.preprocess_input(x)
+        resnet = tf.keras.applications.ResNet50V2(
+            include_top=False,
+            weights="imagenet",
+            pooling=None
+        )
+        for layer in resnet.layers:
+            layer.trainable = False
 
+        for layer in resnet.layers[-25:]:
+            layer.trainable = True
+            print("Layer '%s' is trainable" % layer.name)  
+
+        x = resnet(x)
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
 
@@ -68,16 +74,16 @@ class ImpalaCNN(TFModelV2):
         # x = tf.keras.layers.LSTM(256)(x)
 
         # n256 dense 256x256
-        n256 = 2
+        n256 = 1
         for i in range(n256):
             x = tf.keras.layers.Dense(
                     units=256, activation="relu", name=f"hidden-{i}")(x)
 
         # n4 dense 4x4
-        n4 = 2
+        n4 = 0
         for i in range(n4):
             x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name=f"pi-{i}")(x)
-        logits = tf.keras.layers.Dense(units=num_outputs, name="pi-3")(x)
+        logits = tf.keras.layers.Dense(units=num_outputs, name="pi-last")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
 
         self.base_model = tf.keras.Model(inputs, [logits, value])
