@@ -87,7 +87,7 @@ procgen-ppo:
         # If specified, clip the global norm of gradients by this amount.
         grad_clip: 0.5
         # Which observation filter to apply to the observation.
-        observation_filter: MeanStdFilter # NoFilter
+        observation_filter: NoFilter
         # Share layers for value function. If you set this to True, it's important
         # to tune vf_loss_coeff.
         vf_share_layers: True
