@@ -29,10 +29,36 @@ def conv_sequence(x, depth, prefix):
     return x
 
 def conv_core(x):
-    depths = [16, 32, 64, 128]#, 128, 256]
+    depths = [16, 32, 64]#, 128, 256]
     for i, depth in enumerate(depths):
         x = conv_sequence(x, depth, prefix=f"seq{i}")
     return x
+
+def resnet_core(x):
+    x = tf.keras.applications.resnet_v2.preprocess_input(x)
+    resnet = tf.keras.applications.ResNet50V2(
+        include_top=False,
+        weights="imagenet",
+        pooling=None
+    )
+    for layer in resnet.layers:
+        layer.trainable = False
+
+    for layer in resnet.layers[-25:]:
+        layer.trainable = True
+        print("Layer '%s' is trainable" % layer.name)  
+
+    return x, resnet
+
+def densenet_core(x):
+    densenet = tf.keras.applications.DenseNet121(
+        include_top=False,
+        weights="imagenet",
+        input_shape=x.shape,
+        pooling=None
+    )
+    return x, densenet
+
 
 class ImpalaCNN(TFModelV2):
     """
@@ -45,33 +71,31 @@ class ImpalaCNN(TFModelV2):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
-
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # manual conv core
-        #x = conv_core(x)
+        core = conv_core(x)
+        x = core
 
         # resnet core
-        x = tf.keras.applications.resnet_v2.preprocess_input(x)
-        resnet = tf.keras.applications.ResNet50V2(
-            include_top=False,
-            weights="imagenet",
-            pooling=None
-        )
-        for layer in resnet.layers:
-            layer.trainable = False
+        #x, core = resnet_core(x)
 
-        for layer in resnet.layers[-25:]:
-            layer.trainable = True
-            print("Layer '%s' is trainable" % layer.name)  
 
-        x = resnet(x)
+        # densenet core
+        #x, core = densenet_core(x)
+
+        # lstm core
+        #x = lstm_core(x)
+        # x = tf.keras.layers.TimeDistributed(core)(x)
+        # x = tf.keras.layers.LSTM(256)(x)
+        # self.lstm = x
+        
+
+        # flatten + relu
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
 
-        # x = tf.keras.layers.TimeDistributed(x)
-        # x = tf.keras.layers.LSTM(256)(x)
 
         # n256 dense 256x256
         n256 = 1

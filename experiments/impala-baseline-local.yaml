@@ -128,6 +128,7 @@ procgen-ppo:
         ################################################
         ################################################
         model:
+            custom_preprocessor: MyPreprocessor
             custom_model: impala_cnn_tf
             # Extra options to pass to custom class
             custom_options: {}

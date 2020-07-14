@@ -62,14 +62,14 @@ procgen-ppo:
         lr: 5.0e-4
         # Number of SGD iterations in each outer loop (i.e., number of epochs to
         # execute per train batch).
-        num_sgd_iter: 3
+        num_sgd_iter: 5
         # Total SGD batch size across all devices for SGD. This defines the
         # minibatch size within each epoch.
-        sgd_minibatch_size: 256 # 2048 = 8 minibatches per epoch
+        sgd_minibatch_size: 2048 # 2048 = 8 minibatches per epoch
         # Training batch size, if applicable. Should be >= rollout_fragment_length.
         # Samples batches will be concatenated together to a batch of this size,
         # which is then passed to SGD.
-        train_batch_size: 1024 # 16348 = 256 * 64
+        train_batch_size: 16384 # 16348 = 256 * 64
         # Initial coefficient for KL divergence.
         kl_coeff: 0.0
         # Target value for KL divergence.
@@ -87,7 +87,7 @@ procgen-ppo:
         # If specified, clip the global norm of gradients by this amount.
         grad_clip: 0.5
         # Which observation filter to apply to the observation.
-        observation_filter: NoFilter
+        observation_filter: MeanStdFilter # NoFilter
         # Share layers for value function. If you set this to True, it's important
         # to tune vf_loss_coeff.
         vf_share_layers: True
@@ -128,6 +128,7 @@ procgen-ppo:
         ################################################
         ################################################
         model:
+            custom_preprocessor: MyPreprocessor
             custom_model: impala_cnn_tf
             # Extra options to pass to custom class
             custom_options: {}
@@ -139,12 +140,12 @@ procgen-ppo:
         ################################################
         # Number of rollout worker actors to create for parallel sampling. Setting
         # this to 0 will force rollouts to be done in the trainer actor.
-        num_workers: 1
+        num_workers: 6
 
         # Number of environments to evaluate vectorwise per worker. This enables
         # model inference batching, which can improve performance for inference
         # bottlenecked workloads.
-        num_envs_per_worker: 2
+        num_envs_per_worker: 12
 
         # Divide episodes into fragments of this many steps each during rollouts.
         # Sample batches of this size are collected from rollout workers and
@@ -161,7 +162,7 @@ procgen-ppo:
         #
         # The dataflow here can vary per algorithm. For example, PPO further
         # divides the train batch into minibatches for multi-epoch SGD.
-        rollout_fragment_length: 16 # 256
+        rollout_fragment_length: 256 # 256
 
         # Whether to rollout "complete_episodes" or "truncate_episodes" to
         # `rollout_fragment_length` length unrolls. Episode truncation guarantees
@@ -219,12 +220,10 @@ procgen-ppo:
         # === Advanced Rollout Settings ===
         ################################################
         ################################################
-        # Element-wise observation filter, either "NoFilter" or "MeanStdFilter".
-        observation_filter: "NoFilter"
         # Whether to synchronize the statistics of remote filters.
         synchronize_filters: True
         # Whether to LZ4 compress individual observations
-        compress_observations: False
+        compress_observations: True
         # Minimum env steps to optimize for per train call. This value does
         # not affect learning, only the length of train iterations.
         timesteps_per_iteration: 0
