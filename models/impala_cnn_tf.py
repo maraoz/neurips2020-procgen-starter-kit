@@ -28,37 +28,6 @@ def conv_sequence(x, depth, prefix):
     x = residual_block(x, depth, prefix=prefix + "_block1")
     return x
 
-def conv_core(x):
-    depths = [16, 32, 16]#, 128, 256]
-    for i, depth in enumerate(depths):
-        x = conv_sequence(x, depth, prefix=f"seq{i}")
-    return x
-
-def resnet_core(x):
-    x = tf.keras.applications.resnet_v2.preprocess_input(x)
-    resnet = tf.keras.applications.ResNet50V2(
-        include_top=False,
-        weights="imagenet",
-        pooling=None
-    )
-    for layer in resnet.layers:
-        layer.trainable = False
-
-    for layer in resnet.layers[-25:]:
-        layer.trainable = True
-        print("Layer '%s' is trainable" % layer.name)  
-
-    return x, resnet
-
-def densenet_core(x):
-    densenet = tf.keras.applications.DenseNet121(
-        include_top=False,
-        weights="imagenet",
-        input_shape=x.shape,
-        pooling=None
-    )
-    return x, densenet
-
 
 class ImpalaCNN(TFModelV2):
     """
@@ -71,48 +40,21 @@ class ImpalaCNN(TFModelV2):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
+        depths = [16, 32, 32]
+
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
-        x = tf.cast(inputs, tf.float32) / 255.0
+        scaled_inputs = tf.cast(inputs, tf.float32) / 255.0
 
-        # manual conv core
-        core = conv_core(x)
-        x = core
+        x = scaled_inputs
+        for i, depth in enumerate(depths):
+            x = conv_sequence(x, depth, prefix=f"seq{i}")
 
-        # resnet core
-        #x, core = resnet_core(x)
-
-
-        # densenet core
-        #x, core = densenet_core(x)
-
-        # lstm core
-        #x = lstm_core(x)
-        # x = tf.keras.layers.TimeDistributed(core)(x)
-        # x = tf.keras.layers.LSTM(256)(x)
-        # self.lstm = x
-        
-
-        # flatten + relu
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
-
-
-        # n256 dense 256x256
-        n256 = 1
-        for i in range(n256):
-            x = tf.keras.layers.Dense(
-                    units=256, activation="relu", name=f"hidden-{i}")(x)
-
-        # n4 dense 4x4
-        n4 = 0
-        for i in range(n4):
-            x = tf.keras.layers.Dense(units=num_outputs, activation="relu", name=f"pi-{i}")(x)
-        logits = tf.keras.layers.Dense(units=num_outputs, name="pi-last")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
+        logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
-
         self.base_model = tf.keras.Model(inputs, [logits, value])
-        # Print model summary
-        # print(self.base_model.summary())
         self.register_variables(self.base_model.variables)
 
     def forward(self, input_dict, state, seq_lens):
