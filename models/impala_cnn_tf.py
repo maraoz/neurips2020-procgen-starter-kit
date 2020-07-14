@@ -50,15 +50,16 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # manual conv core
-        # x = conv_core(x)
+        x = conv_core(x)
 
-        x = tf.keras.applications.resnet_v2.preprocess_input(x)
-        x = tf.keras.applications.ResNet50V2(
-            include_top=False,
-            weights="imagenet",
-            pooling=None
-        )(x)
-        x.trainable = False
+        # resnet core
+        #x = tf.keras.applications.resnet_v2.preprocess_input(x)
+        #x = tf.keras.applications.ResNet50V2(
+        #    include_top=False,
+        #    weights="imagenet",
+        #    pooling=None
+        #)(x)
+        #x.trainable = False
 
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
