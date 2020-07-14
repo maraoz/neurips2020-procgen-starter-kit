@@ -223,7 +223,7 @@ procgen-ppo:
         # Whether to synchronize the statistics of remote filters.
         synchronize_filters: True
         # Whether to LZ4 compress individual observations
-        compress_observations: True
+        compress_observations: False
         # Minimum env steps to optimize for per train call. This value does
         # not affect learning, only the length of train iterations.
         timesteps_per_iteration: 0
