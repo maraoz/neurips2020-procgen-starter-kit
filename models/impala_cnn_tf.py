@@ -28,6 +28,36 @@ def conv_sequence(x, depth, prefix):
     x = residual_block(x, depth, prefix=prefix + "_block1")
     return x
 
+def conv_core(x):
+    depths = [16, 32, 64]#, 128, 256]
+    for i, depth in enumerate(depths):
+        x = conv_sequence(x, depth, prefix=f"seq{i}")
+    return x
+
+def resnet_core(x):
+    x = tf.keras.applications.resnet_v2.preprocess_input(x)
+    resnet = tf.keras.applications.ResNet50V2(
+        include_top=False,
+        weights="imagenet",
+        pooling=None
+    )
+    for layer in resnet.layers:
+        layer.trainable = False
+
+    for layer in resnet.layers[-25:]:
+        layer.trainable = True
+        print("Layer '%s' is trainable" % layer.name)  
+
+    return resnet(x)
+
+def densenet_core(x):
+    densenet = tf.keras.applications.DenseNet121(
+        include_top=False,
+        weights="imagenet",
+        input_shape=x.shape,
+        pooling=None
+    )
+    return densenet(x)
 
 class ImpalaCNN(TFModelV2):
     """
@@ -40,20 +70,27 @@ class ImpalaCNN(TFModelV2):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
-        depths = [16, 32, 64]
-
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
-        scaled_inputs = tf.cast(inputs, tf.float32) / 255.0
+        x = tf.cast(inputs, tf.float32) / 255.0
 
-        x = scaled_inputs
-        for i, depth in enumerate(depths):
-            x = conv_sequence(x, depth, prefix=f"seq{i}")
+        # conv core
+        #x = conv_core(x)
 
+        # resnet core
+        x = resnet_core(x)
+
+        # flatten relu
         x = tf.keras.layers.Flatten()(x)
         x = tf.keras.layers.ReLU()(x)
+
+        # dense
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
+
+        # outputs
         logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
+
+        # build model
         self.base_model = tf.keras.Model(inputs, [logits, value])
         self.register_variables(self.base_model.variables)
 
