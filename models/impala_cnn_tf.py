@@ -54,7 +54,6 @@ def mobile_core(x):
     x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
     mobile = tf.keras.applications.MobileNetV2(
         include_top=False,
-        input_shape=x.shape,
         weights="imagenet",
         pooling=None
     )
