@@ -29,7 +29,7 @@ def conv_sequence(x, depth, prefix):
     return x
 
 def conv_core(x):
-    depths = [16, 32, 64]#, 128, 256]
+    depths = [16, 32, 16]#, 128, 256]
     for i, depth in enumerate(depths):
         x = conv_sequence(x, depth, prefix=f"seq{i}")
     return x
@@ -74,10 +74,10 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        #x = conv_core(x)
+        x = conv_core(x)
 
         # resnet core
-        x = resnet_core(x)
+        #x = resnet_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
