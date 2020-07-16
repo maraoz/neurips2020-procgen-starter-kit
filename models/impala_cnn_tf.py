@@ -50,6 +50,19 @@ def resnet_core(x):
 
     return resnet(x)
 
+def mobile_core(x):
+    x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
+    mobile = tf.keras.applications.MobileNetV2(
+        include_top=False,
+        input_shape=x.shape,
+        weights="imagenet",
+        pooling=None
+    )
+    for layer in mobile.layers:
+        layer.trainable = False
+
+    return mobile(x)
+
 def densenet_core(x):
     densenet = tf.keras.applications.DenseNet121(
         include_top=False,
@@ -74,10 +87,13 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        x = conv_core(x)
+        #x = conv_core(x)
 
         # resnet core
         #x = resnet_core(x)
+
+        # mobile core
+        x = mobile_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
