@@ -1,6 +1,6 @@
 procgen-ppo:
     env: procgen_env_wrapper  # Change this at your own risk :D
-    run: PPO
+    run: APPO
     # Can be replaced by any of the available agents as described at : 
     # https://github.com/ray-project/ray/blob/master/rllib/agents/registry.py#L103
     # 
@@ -57,7 +57,7 @@ procgen-ppo:
         # Discount factor of the MDP.
         gamma: 0.999
         # The GAE(lambda) parameter.
-        lambda: 0.95
+        lambda: 1
         # The default learning rate.
         lr: 5.0e-4
         # Number of SGD iterations in each outer loop (i.e., number of epochs to
@@ -70,15 +70,18 @@ procgen-ppo:
         # Samples batches will be concatenated together to a batch of this size,
         # which is then passed to SGD.
         train_batch_size: 16384 # 16348 = 256 * 64
-        # Initial coefficient for KL divergence.
-        kl_coeff: 0.0
+        # Initial oefficient for KL divergence.
+        kl_coeff: 1.0
         # Target value for KL divergence.
-        kl_target: 0.01
+        kl_target: 0.02 # 0.01
         # Coefficient of the value function loss. IMPORTANT: you must tune this if
         # you set vf_share_layers: True.
         vf_loss_coeff: 0.5
         # Coefficient of the entropy regularizer.
         entropy_coeff: 0.01
+        decay: 0.99
+        momentum: 0.01
+        epsilon: 0.1
         # PPO clip parameter.
         clip_param: 0.2
         # Clip param for the value function. Note that this is sensitive to the
