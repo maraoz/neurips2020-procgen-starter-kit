@@ -29,7 +29,7 @@ def conv_sequence(x, depth, prefix):
     return x
 
 def conv_core(x):
-    depths = [16, 32, 64, 128, 256]
+    depths = [16, 32, 64]
     for i, depth in enumerate(depths):
         x = conv_sequence(x, depth, prefix=f"seq{i}")
     return x
