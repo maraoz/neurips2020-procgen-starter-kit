@@ -94,7 +94,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        #x = conv_core(x)
+        x = conv_core(x)
 
         # resnet core
         #x = resnet_core(x)
@@ -103,7 +103,7 @@ class ImpalaCNN(TFModelV2):
         #x = mobile_core(x)
 
         # densenet core
-        x = densenet_core(x)
+        # x = densenet_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
