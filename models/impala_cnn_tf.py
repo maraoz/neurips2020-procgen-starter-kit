@@ -29,7 +29,7 @@ def conv_sequence(x, depth, prefix):
     return x
 
 def conv_core(x):
-    depths = [16, 32, 64] #, 128, 256]
+    depths = [16, 32, 64, 128, 256]
     for i, depth in enumerate(depths):
         x = conv_sequence(x, depth, prefix=f"seq{i}")
     return x
@@ -51,22 +51,30 @@ def resnet_core(x):
     return resnet(x)
 
 def mobile_core(x):
+
     x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
+
     mobile = tf.keras.applications.MobileNetV2(
         include_top=False,
         weights="imagenet",
         pooling=None
     )
-    for layer in mobile.layers:
+
+    s = tf.keras.models.Sequential()
+    i = 0
+    for layer in mobile.layers[:-2]:
+        print('adding layer',i, layer)
+        i += 1
+        s.add(layer)
+    for layer in s.layers:
         layer.trainable = False
 
-    return mobile(x)
+    return s(x)
 
 def densenet_core(x):
     densenet = tf.keras.applications.DenseNet121(
         include_top=False,
         weights="imagenet",
-        input_shape=x.shape,
         pooling=None
     )
     return densenet(x)
@@ -92,7 +100,10 @@ class ImpalaCNN(TFModelV2):
         #x = resnet_core(x)
 
         # mobile core
-        x = mobile_core(x)
+        #x = mobile_core(x)
+
+        # densenet core
+        x = densenet_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
