@@ -113,6 +113,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
 
         # outputs
+        #print('num_outputs',num_outputs)
         logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
         value = tf.keras.layers.Dense(units=1, name="vf")(x)
 
