@@ -206,16 +206,17 @@ procgen-ppo:
         # Set to False for no exploration behavior (e.g., for evaluation).
         explore: True,
         # Provide a dict specifying the Exploration object's config.
-        exploration_config:
+        exploration_config: {
             # The Exploration class to use. In the simplest case, this is the name
             # (str) of any class present in the `rllib.utils.exploration` package.
             # You can also provide the python class directly or the full location
             # of your class (e.g. "ray.rllib.utils.exploration.epsilon_greedy.
             # EpsilonGreedy)
-            type: EpsilonGreedy, #"StochasticSampling"
-            epsilon_timesteps: 7000000
-            final_epsilon: 0.2
-            initial_epsilon: 1.0
+            type: "EpsilonGreedy", #"StochasticSampling"
+            epsilon_timesteps: 7000000,
+            final_epsilon: 0.2,
+            initial_epsilon: 1.0,
+        }
         ################################################
         ################################################
         # === Advanced Rollout Settings ===
