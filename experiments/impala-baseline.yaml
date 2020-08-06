@@ -18,8 +18,8 @@ procgen-ppo:
       use_generated_assets: false
       use_sequential_levels: false
     exploration_config:
-      epsilon_timesteps: 10000
-      final_epsilon: 0.02
+      epsilon_timesteps: 7000000
+      final_epsilon: 0.2
       initial_epsilon: 1.0
       type: EpsilonGreedy
     explore: True,
