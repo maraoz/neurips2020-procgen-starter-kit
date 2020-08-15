@@ -1,6 +1,8 @@
 from ray.rllib.models.tf.tf_modelv2 import TFModelV2
 from ray.rllib.utils.framework import try_import_tf
 from ray.rllib.models import ModelCatalog
+from classification_models.keras import Classifiers
+
 
 tf = try_import_tf()
 
@@ -50,6 +52,18 @@ def resnet_core(x):
 
     return resnet(x)
 
+def resnet18_core(x):
+    ResNet18, preprocess_input = Classifiers.get('resnet18')
+    x = preprocess_input(x)
+    resnet18 = ResNet18((224, 224, 3), weights='imagenet')
+    for layer in resnet18.layers:
+        layer.trainable = False
+
+    for layer in resnet18.layers[-1:]:
+        layer.trainable = True
+    return resnet18(x)
+
+
 def mobile_core(x):
 
     x = tf.keras.applications.mobilenet_v2.preprocess_input(x)
@@ -94,7 +108,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        x = conv_core(x)
+        #x = conv_core(x)
 
         # resnet core
         #x = resnet_core(x)
@@ -104,6 +118,9 @@ class ImpalaCNN(TFModelV2):
 
         # densenet core
         # x = densenet_core(x)
+
+        # resnet18 core
+        x = resnet18_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
