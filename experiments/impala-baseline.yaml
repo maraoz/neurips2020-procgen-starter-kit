@@ -43,13 +43,13 @@ procgen-ppo:
     num_workers: 6
     observation_filter: NoFilter
     preprocessor_pref: deepmind
-    rollout_fragment_length: 16
+    rollout_fragment_length: 256
     seed: null
-    sgd_minibatch_size: 256
+    sgd_minibatch_size: 2048
     soft_horizon: false
     synchronize_filters: true
     timesteps_per_iteration: 0
-    train_batch_size: 1024
+    train_batch_size: 16348
     vf_clip_param: 0.2
     vf_loss_coeff: 0.5
     vf_share_layers: true

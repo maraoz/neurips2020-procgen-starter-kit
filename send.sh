@@ -11,6 +11,7 @@ echo "version name: $version-$1"
 python local-to-prod.py
 
 git add experiments/impala-baseline.yaml
+git add experiments/impala-github.yaml
 git commit -m"AUTO: local->prod yaml for v0.$version-$1"
 
 echo $version > version.txt
