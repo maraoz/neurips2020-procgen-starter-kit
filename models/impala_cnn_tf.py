@@ -57,6 +57,7 @@ def resnet18_core(x):
     x = preprocess_input(x)
     resnet18 = ResNet18((224, 224, 3), weights='imagenet')
     for layer in resnet18.layers:
+        print("Layer '%s' is not trainable" % layer.name)  
         layer.trainable = False
 
     for layer in resnet18.layers[-1:]:
@@ -108,7 +109,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        x = conv_core(x)
+        #x = conv_core(x)
 
         # resnet core
         #x = resnet_core(x)
@@ -120,7 +121,7 @@ class ImpalaCNN(TFModelV2):
         # x = densenet_core(x)
 
         # resnet18 core
-        #x = resnet18_core(x)
+        x = resnet18_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
