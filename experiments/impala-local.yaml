@@ -122,6 +122,9 @@ procgen-ppo:
         # Note : The AIcrowd Evaluators will always override this to be True
         log_sys_usage: True
 
+        use_pytorch: False
+
+
         ################################################
         ################################################
         # === Settings for Model ===
