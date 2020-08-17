@@ -60,7 +60,8 @@ def resnet18_core(x):
         print("Layer '%s' is not trainable" % layer.name)  
         layer.trainable = False
 
-    for layer in resnet18.layers[-1:]:
+    for layer in resnet18.layers[-4:]:
+        print("Layer '%s' is trainable" % layer.name)  
         layer.trainable = True
     return resnet18(x)
 
@@ -128,7 +129,8 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=512, activation="relu", name="hidden")(x)
+        #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
 
         # outputs
         #print('num_outputs',num_outputs)
