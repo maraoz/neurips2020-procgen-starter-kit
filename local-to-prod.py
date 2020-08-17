@@ -22,9 +22,9 @@ with open("experiments/impala-local.yaml") as fp:
 
     # steps
     impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 500000
+    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 8000000
     impala_config["procgen-ppo"]["checkpoint_freq"] = 10
 
-    #impala_config["procgen-ppo"]["config"]["model"]["custom_model"] = "sample_tf"
     # workers
     impala_config["procgen-ppo"]["config"]["num_workers"] = 1
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 6
