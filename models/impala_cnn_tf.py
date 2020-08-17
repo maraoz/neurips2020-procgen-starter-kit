@@ -120,12 +120,15 @@ class ImpalaCNN(TFModelV2):
         # resnet18 core
         x = resnet18_core(x)
 
+        # average pooling2d
+        x = tf.keras.layers.GlobalAveragePooling2D()(x)
+
         # flatten relu
-        x = tf.keras.layers.Flatten()(x)
-        x = tf.keras.layers.ReLU()(x)
+        #x = tf.keras.layers.Flatten()(x)
+        #x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=512, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
 
         # outputs
