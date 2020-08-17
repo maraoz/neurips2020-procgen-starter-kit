@@ -58,7 +58,7 @@ def resnet18_core(x):
     resnet18 = ResNet18((224, 224, 3), weights='imagenet', include_top=False)
     for layer in resnet18.layers:
         print("Layer '%s' " % layer.name)  
-        #layer.trainable = False
+        layer.trainable = False
     return resnet18(x)
 
 
