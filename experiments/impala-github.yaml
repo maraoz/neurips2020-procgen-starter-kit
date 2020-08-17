@@ -30,7 +30,7 @@ procgen-ppo:
     log_sys_usage: true
     lr: 0.0005
     model:
-      custom_model: sample_tf
+      custom_model: impala_cnn_tf
       custom_options: {}
     no_done_at_end: false
     normalize_actions: false
