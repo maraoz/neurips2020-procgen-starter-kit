@@ -14,6 +14,7 @@ RUN apt -qq update && apt -qq install -y --no-install-recommends \
     ffmpeg \
     freeglut3-dev \
     git \
+    ninja-build \
  && rm -rf /var/cache/*
 
 # S3 client
