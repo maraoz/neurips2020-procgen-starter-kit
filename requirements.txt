@@ -1,6 +1,6 @@
 ray[rllib]==0.8.5
 procgen==0.10.4
 tensorflow==2.3.0
-#mlflow==1.8.0
-#boto3==1.13.10
+mlflow==1.8.0
+boto3==1.13.10
 git+https://github.com/qubvel/classification_models.git
