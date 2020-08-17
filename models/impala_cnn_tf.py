@@ -55,14 +55,10 @@ def resnet18_core(x):
     from classification_models.keras import Classifiers
     ResNet18, preprocess_input = Classifiers.get('resnet18')
     x = preprocess_input(x)
-    resnet18 = ResNet18((224, 224, 3), weights='imagenet')
+    resnet18 = ResNet18((224, 224, 3), weights='imagenet', include_top=False)
     for layer in resnet18.layers:
-        print("Layer '%s' is not trainable" % layer.name)  
-        layer.trainable = False
-
-    for layer in resnet18.layers[-4:]:
-        print("Layer '%s' is trainable" % layer.name)  
-        layer.trainable = True
+        print("Layer '%s' " % layer.name)  
+        #layer.trainable = False
     return resnet18(x)
 
 
