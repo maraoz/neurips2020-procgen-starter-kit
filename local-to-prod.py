@@ -29,8 +29,8 @@ with open("experiments/impala-local.yaml") as fp:
     #impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
 
     # gpu activation
-    impala_config["procgen-ppo"]["config"]["num_gpus"] = 0.2
-    impala_config["procgen-ppo"]["config"]["num_gpus_per_worker"] = 0.01
+    #impala_config["procgen-ppo"]["config"]["num_gpus"] = 0.2
+    #impala_config["procgen-ppo"]["config"]["num_gpus_per_worker"] = 0.01
 
     with open("experiments/impala-github.yaml", "w") as fp:
         yaml.dump(impala_config, fp)
