@@ -42,11 +42,11 @@ def conv_sequence(x, spec, prefix):
 
 def conv_core(x):
     specs = [
-        {"depth": 16, "kernel": 3, "strides": 2},
-        {"depth": 16, "kernel": 3, "strides": 2},
-        {"depth": 32, "kernel": 3, "strides": 2},
-        {"depth": 32, "kernel": 3, "strides": 2},
-        {"depth": 64, "kernel": 3, "strides": 2}
+        {"depth": 16, "kernel": 3, "strides": 3},
+        {"depth": 16, "kernel": 3, "strides": 3},
+        {"depth": 32, "kernel": 3, "strides": 3},
+        {"depth": 32, "kernel": 3, "strides": 3},
+        {"depth": 64, "kernel": 3, "strides": 3}
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
