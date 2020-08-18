@@ -43,7 +43,6 @@ def conv_core(x):
     from types import SimpleNamespace
     specs = [
         {"depth": 16, "kernel": 3, "strides": 1},
-        {"depth": 16, "kernel": 3, "strides": 1},
         {"depth": 32, "kernel": 3, "strides": 1},
         {"depth": 32, "kernel": 3, "strides": 1}
     ]
