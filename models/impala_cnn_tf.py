@@ -6,33 +6,40 @@ from ray.rllib.models import ModelCatalog
 tf = try_import_tf()
 
 
-def conv_layer(depth, name):
+def conv_layer(spec, name):
     return tf.keras.layers.Conv2D(
-        filters=depth, kernel_size=3, strides=1, padding="same", name=name
+        filters=spec['depth'], kernel_size=spec['kernel'], strides=spec['strides'], padding="same", name=name
     )
 
 
-def residual_block(x, depth, prefix):
+def residual_block(x, spec, prefix):
     inputs = x
-    assert inputs.get_shape()[-1].value == depth
+    assert inputs.get_shape()[-1].value == spec['depth']
     x = tf.keras.layers.ReLU()(x)
-    x = conv_layer(depth, name=prefix + "_conv0")(x)
+    x = conv_layer(spec, name=prefix + "_conv0")(x)
     x = tf.keras.layers.ReLU()(x)
-    x = conv_layer(depth, name=prefix + "_conv1")(x)
+    x = conv_layer(spec, name=prefix + "_conv1")(x)
     return x + inputs
 
 
-def conv_sequence(x, depth, prefix):
-    x = conv_layer(depth, prefix + "_conv")(x)
+def conv_sequence(x, spec, prefix):
+    x = conv_layer(spec, prefix + "_conv")(x)
     x = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding="same")(x)
-    x = residual_block(x, depth, prefix=prefix + "_block0")
-    x = residual_block(x, depth, prefix=prefix + "_block1")
+    x = residual_block(x, spec, prefix=prefix + "_block0")
+    x = residual_block(x, spec, prefix=prefix + "_block1")
     return x
 
+
 def conv_core(x):
-    depths = [16, 32, 64]
-    for i, depth in enumerate(depths):
-        x = conv_sequence(x, depth, prefix=f"seq{i}")
+    from types import SimpleNamespace
+    specs = [
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 32, "kernel": 3, "strides": 1},
+        {"depth": 32, "kernel": 3, "strides": 1}
+    ]
+    for i, spec in enumerate(specs):
+        x = conv_sequence(x, spec, prefix=f"seq{i}")
     return x
 
 def resnet_core(x):
@@ -106,7 +113,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        #x = conv_core(x)
+        x = conv_core(x)
 
         # resnet core
         #x = resnet_core(x)
@@ -118,14 +125,14 @@ class ImpalaCNN(TFModelV2):
         # x = densenet_core(x)
 
         # resnet18 core
-        x = resnet18_core(x)
+        #x = resnet18_core(x)
 
         # average pooling2d
-        x = tf.keras.layers.GlobalAveragePooling2D()(x)
+        #x = tf.keras.layers.GlobalAveragePooling2D()(x)
 
         # flatten relu
-        #x = tf.keras.layers.Flatten()(x)
-        #x = tf.keras.layers.ReLU()(x)
+        x = tf.keras.layers.Flatten()(x)
+        x = tf.keras.layers.ReLU()(x)
 
         # dense
         x = tf.keras.layers.Dense(units=512, activation="relu", name="hidden")(x)
