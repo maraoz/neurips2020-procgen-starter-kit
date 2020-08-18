@@ -19,12 +19,15 @@ def residual_block(x, spec, prefix):
     first = spec.copy()
     first['kernel'] = 1
     first['strides'] = 1
+    x = tf.keras.layers.ReLU()(x)
     x = conv_layer(first, name=prefix + "_conv0")(x)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.ReLU()(x)
     x = conv_layer(spec, name=prefix + "_conv1")(x)
     x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.ReLU()(x)
+    x = conv_layer(first, name=prefix + "_conv2")(x)
+    x = tf.keras.layers.BatchNormalization()(x)
     return x + inputs
 
 
@@ -38,11 +41,10 @@ def conv_sequence(x, spec, prefix):
 
 def conv_core(x):
     specs = [
-        {"depth": 16, "kernel": 5, "strides": 1},
-        {"depth": 16, "kernel": 5, "strides": 1},
-        {"depth": 32, "kernel": 5, "strides": 1},
-        {"depth": 32, "kernel": 5, "strides": 1},
-        {"depth": 64, "kernel": 5, "strides": 1}
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
