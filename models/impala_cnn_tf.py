@@ -44,6 +44,7 @@ def conv_core(x):
     from types import SimpleNamespace
     specs = [
         {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
         {"depth": 32, "kernel": 3, "strides": 1},
         {"depth": 32, "kernel": 3, "strides": 1}
     ]
@@ -144,7 +145,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=512, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
 
         # outputs
@@ -156,7 +157,6 @@ class ImpalaCNN(TFModelV2):
         self.base_model = tf.keras.Model(inputs, [logits, value])
         for layer in self.base_model.layers:
             print(layer.name)
-        print(1/0)
         self.register_variables(self.base_model.variables)
 
     def forward(self, input_dict, state, seq_lens):
