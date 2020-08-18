@@ -16,7 +16,6 @@ def conv_layer(spec, name):
 def residual_block(x, spec, prefix):
     inputs = x
     assert inputs.get_shape()[-1].value == spec['depth']
-    x = tf.keras.layers.ReLU()(x)
     first = spec.copy()
     first['kernel'] = 1
     first['strides'] = 1
@@ -25,6 +24,7 @@ def residual_block(x, spec, prefix):
     x = tf.keras.layers.ReLU()(x)
     x = conv_layer(spec, name=prefix + "_conv1")(x)
     x = tf.keras.layers.BatchNormalization()(x)
+    x = tf.keras.layers.ReLU()(x)
     return x + inputs
 
 
@@ -32,21 +32,17 @@ def conv_sequence(x, spec, prefix):
     x = conv_layer(spec, prefix + "_conv")(x)
     x = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding="same")(x)
     x = residual_block(x, spec, prefix=prefix + "_block0")
-    # added ReLU
-    x = tf.keras.layers.ReLU()(x)
     x = residual_block(x, spec, prefix=prefix + "_block1")
-    # added ReLU
-    x = tf.keras.layers.ReLU()(x)
     return x
 
 
 def conv_core(x):
     specs = [
-        {"depth": 16, "kernel": 3, "strides": 3},
-        {"depth": 16, "kernel": 3, "strides": 3},
-        {"depth": 32, "kernel": 3, "strides": 3},
-        {"depth": 32, "kernel": 3, "strides": 3},
-        {"depth": 64, "kernel": 3, "strides": 3}
+        {"depth": 16, "kernel": 5, "strides": 1},
+        {"depth": 16, "kernel": 5, "strides": 1},
+        {"depth": 32, "kernel": 5, "strides": 1},
+        {"depth": 32, "kernel": 5, "strides": 1},
+        {"depth": 64, "kernel": 5, "strides": 1}
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
