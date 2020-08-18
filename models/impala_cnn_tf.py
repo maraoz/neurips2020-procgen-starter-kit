@@ -7,9 +7,10 @@ tf = try_import_tf()
 
 
 def conv_layer(spec, name):
+    full_name = name + "-" + str(spec['depth']) + "-" + str(spec['kernel']) + "-" +str(spec['strides'])
     return tf.keras.layers.Conv2D(
-        filters=spec['depth'], kernel_size=spec['kernel'], strides=spec['strides'], padding="same", name=name
-    )
+        filters=spec['depth'], kernel_size=spec['kernel'], strides=spec['strides'], padding="same", name=full_name
+        )
 
 
 def residual_block(x, spec, prefix):
@@ -153,6 +154,9 @@ class ImpalaCNN(TFModelV2):
 
         # build model
         self.base_model = tf.keras.Model(inputs, [logits, value])
+        for layer in self.base_model.layers:
+            print(layer.name)
+        print(1/0)
         self.register_variables(self.base_model.variables)
 
     def forward(self, input_dict, state, seq_lens):
