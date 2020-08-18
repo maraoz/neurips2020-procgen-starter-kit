@@ -16,17 +16,26 @@ def residual_block(x, spec, prefix):
     inputs = x
     assert inputs.get_shape()[-1].value == spec['depth']
     x = tf.keras.layers.ReLU()(x)
-    x = conv_layer(spec, name=prefix + "_conv0")(x)
+    first = spec.copy()
+    first['kernel'] = 1
+    first['strides'] = 1
+    x = conv_layer(first, name=prefix + "_conv0")(x)
+    x = tf.keras.layers.BatchNormalization()(x)
     x = tf.keras.layers.ReLU()(x)
     x = conv_layer(spec, name=prefix + "_conv1")(x)
+    x = tf.keras.layers.BatchNormalization()(x)
     return x + inputs
 
 
 def conv_sequence(x, spec, prefix):
     x = conv_layer(spec, prefix + "_conv")(x)
-    x = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding="same")(x)
+    x = tf.keras.layers.MaxPool2D(pool_size=3, strides=1, padding="same")(x)
     x = residual_block(x, spec, prefix=prefix + "_block0")
+    # added ReLU
+    x = tf.keras.layers.ReLU()(x)
     x = residual_block(x, spec, prefix=prefix + "_block1")
+    # added ReLU
+    x = tf.keras.layers.ReLU()(x)
     return x
 
 
