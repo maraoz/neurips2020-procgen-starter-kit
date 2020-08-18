@@ -29,7 +29,7 @@ def residual_block(x, spec, prefix):
 
 def conv_sequence(x, spec, prefix):
     x = conv_layer(spec, prefix + "_conv")(x)
-    x = tf.keras.layers.MaxPool2D(pool_size=3, strides=1, padding="same")(x)
+    x = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding="same")(x)
     x = residual_block(x, spec, prefix=prefix + "_block0")
     # added ReLU
     x = tf.keras.layers.ReLU()(x)
