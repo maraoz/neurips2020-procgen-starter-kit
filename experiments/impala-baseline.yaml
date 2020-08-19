@@ -49,7 +49,7 @@ procgen-ppo:
     soft_horizon: false
     synchronize_filters: true
     timesteps_per_iteration: 0
-    train_batch_size: 16348
+    train_batch_size: 16384
     use_pytorch: false
     vf_clip_param: 0.2
     vf_loss_coeff: 0.5
