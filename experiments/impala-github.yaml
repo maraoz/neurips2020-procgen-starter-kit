@@ -58,4 +58,4 @@ procgen-ppo:
   keep_checkpoints_num: 5
   run: PPO
   stop:
-    timesteps_total: 500000
+    timesteps_total: 100000
