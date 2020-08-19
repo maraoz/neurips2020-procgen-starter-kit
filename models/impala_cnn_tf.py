@@ -85,9 +85,11 @@ def mobile_core(x):
     mobile = tf.keras.applications.MobileNetV2(
         include_top=False,
         weights="imagenet",
-        pooling=None
     )
 
+    for layer in mobile.layers:
+        layer.trainable = False
+    return mobile(x)
     s = tf.keras.models.Sequential()
     i = 0
     for layer in mobile.layers[:-2]:
@@ -122,13 +124,13 @@ class ImpalaCNN(TFModelV2):
         x = tf.cast(inputs, tf.float32) / 255.0
 
         # conv core
-        x = conv_core(x)
+        #x = conv_core(x)
 
         # resnet core
         #x = resnet_core(x)
 
         # mobile core
-        #x = mobile_core(x)
+        x = mobile_core(x)
 
         # densenet core
         # x = densenet_core(x)
@@ -144,7 +146,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=384, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
 
         # outputs

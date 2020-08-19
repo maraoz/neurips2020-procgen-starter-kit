@@ -6,6 +6,10 @@ with open("experiments/impala-local.yaml") as fp:
     # steps
     impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 8000000
 
+    # memory intensive stuff
+    impala_config["procgen-ppo"]["config"]["train_batch_size"] = 16384
+    impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
+
     # workers
     impala_config["procgen-ppo"]["config"]["num_workers"] = 6
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
@@ -22,8 +26,11 @@ with open("experiments/impala-local.yaml") as fp:
 
     # steps
     impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 100000
-    #impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 8000000
     impala_config["procgen-ppo"]["checkpoint_freq"] = 10
+
+    # memory intensive stuff
+    impala_config["procgen-ppo"]["config"]["train_batch_size"] = 16384
+    impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
 
     # workers
     impala_config["procgen-ppo"]["config"]["num_workers"] = 1
