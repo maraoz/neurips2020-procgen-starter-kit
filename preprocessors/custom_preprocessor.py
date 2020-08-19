@@ -22,4 +22,5 @@ class MyPreprocessorClass(Preprocessor):
             self.last_obs = obs
             return obs
         delta = (obs - self.last_obs+255)/2
+        self.last_obs = obs
         return delta
