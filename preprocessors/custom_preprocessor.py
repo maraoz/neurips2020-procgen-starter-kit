@@ -21,5 +21,5 @@ class MyPreprocessorClass(Preprocessor):
         if self.last_obs is None:
             self.last_obs = obs
             return obs
-        delta = (obs - self.last_obs+255)/2 + 255
+        delta = (obs - self.last_obs+255)/2
         return delta
