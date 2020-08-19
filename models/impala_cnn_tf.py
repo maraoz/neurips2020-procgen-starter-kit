@@ -40,6 +40,9 @@ def conv_sequence(x, spec, prefix):
 
 
 def conv_core(x):
+    # conv_core preprocess
+    x = tf.cast(x, tf.float32) / 255.0
+
     specs = [
         {"depth": 16, "kernel": 3, "strides": 1},
         {"depth": 16, "kernel": 3, "strides": 1},
@@ -90,6 +93,7 @@ def mobile_core(x):
     for layer in mobile.layers:
         layer.trainable = False
     return mobile(x)
+    #dead
     s = tf.keras.models.Sequential()
     i = 0
     for layer in mobile.layers[:-2]:
@@ -121,8 +125,7 @@ class ImpalaCNN(TFModelV2):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
-        x = tf.cast(inputs, tf.float32) / 255.0
-
+        x = inputs
         # conv core
         x = conv_core(x)
 

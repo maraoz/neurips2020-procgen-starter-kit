@@ -2,6 +2,7 @@
 
 from ray.rllib.models.preprocessors import Preprocessor
 from ray.rllib.utils.framework import try_import_tf
+
 tf = try_import_tf()
 
 class MyPreprocessorClass(Preprocessor):
@@ -22,5 +23,8 @@ class MyPreprocessorClass(Preprocessor):
             self.last_obs = obs
             return obs
         delta = (obs - self.last_obs+255)/2
+        # import numpy as np
+        # print(delta.shape, np.linalg.norm(delta))
+        # print(delta)
         self.last_obs = obs
         return delta
