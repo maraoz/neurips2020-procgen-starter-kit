@@ -21,7 +21,7 @@ with open("experiments/impala-local.yaml") as fp:
     impala_config = yaml.safe_load(fp)
 
     # steps
-    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 500000
+    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 100000
     #impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 8000000
     impala_config["procgen-ppo"]["checkpoint_freq"] = 10
 
