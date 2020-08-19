@@ -45,6 +45,7 @@ def conv_core(x):
         {"depth": 16, "kernel": 3, "strides": 1},
         {"depth": 16, "kernel": 3, "strides": 1},
         {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
