@@ -60,14 +60,14 @@ def resnet_core(x):
         include_top=False,
         weights="imagenet",
     )
-    remove_n = 150
+    remove_n = 105+46
     s = tf.keras.models.Model(resnet.input, resnet.layers[-remove_n].output, name='resnet-core')
     for layer in s.layers:
         print('adding layer',layer.name)
     for layer in s.layers[:]:
         layer.trainable = False
     s.build(None)
-
+    #print(1/0)
     return s(x), resnet
 
 def resnet18_core(x):
@@ -159,6 +159,7 @@ class ImpalaCNN(TFModelV2):
         for layer in self.base_model.layers:
             print(layer.name)
         self.register_variables(self.base_model.variables)
+        self.register_variables(full.variables)
 
     def forward(self, input_dict, state, seq_lens):
         # explicit cast to float32 needed in eager
