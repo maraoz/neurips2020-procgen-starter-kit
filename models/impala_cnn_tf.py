@@ -45,8 +45,10 @@ def conv_core(x):
 
     specs = [
         {"depth": 16, "kernel": 3, "strides": 1},
-        {"depth": 32, "kernel": 3, "strides": 1},
-        {"depth": 32, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
@@ -57,16 +59,16 @@ def resnet_core(x):
     resnet = tf.keras.applications.ResNet50V2(
         include_top=False,
         weights="imagenet",
-        pooling=None
     )
-    for layer in resnet.layers:
+    remove_n = 150
+    s = tf.keras.models.Model(resnet.input, resnet.layers[-remove_n].output, name='resnet-core')
+    for layer in s.layers:
+        print('adding layer',layer.name)
+    for layer in s.layers[:]:
         layer.trainable = False
+    s.build(None)
 
-    for layer in resnet.layers[-25:]:
-        layer.trainable = True
-        print("Layer '%s' is trainable" % layer.name)  
-
-    return resnet(x)
+    return s(x), resnet
 
 def resnet18_core(x):
     from classification_models.keras import Classifiers
@@ -87,19 +89,16 @@ def mobile_core(x):
         include_top=False,
         weights="imagenet",
     )
-
-    for layer in mobile.layers:
-        layer.trainable = False
-    return mobile(x)
-    #dead
-    s = tf.keras.models.Sequential()
-    i = 0
-    for layer in mobile.layers[:-2]:
-        print('adding layer',i, layer)
-        i += 1
-        s.add(layer)
+    remove_n = 130
+    for i in range(remove_n):
+        mobile._layers.pop()
+        print(i, len(mobile._layers))
+    s = tf.keras.models.Model(mobile.input, mobile._layers[-1].output, name='mobile-core')
     for layer in s.layers:
+        print('adding layer',layer.name)
+    for layer in s.layers[:]:
         layer.trainable = False
+    s.build(None)
 
     return s(x)
 
@@ -125,13 +124,13 @@ class ImpalaCNN(TFModelV2):
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = inputs
         # conv core
-        x = conv_core(x)
+        # x = conv_core(x)
 
         # resnet core
-        #x = resnet_core(x)
+        x, full = resnet_core(x)
 
         # mobile core
-        #x = mobile_core(x)
+        # x = mobile_core(x)
 
         # densenet core
         # x = densenet_core(x)
