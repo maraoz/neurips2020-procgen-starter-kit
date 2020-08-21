@@ -60,7 +60,7 @@ def resnet_core(x):
         include_top=False,
         weights='imagenet'
     )
-    remove_n = 105+46
+    remove_n = 105#+46
     s = tf.keras.models.Model(resnet.input, resnet.layers[-remove_n].output, name='resnet-core')
     for layer in s.layers:
         print('adding layer',layer.name)
