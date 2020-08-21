@@ -34,7 +34,7 @@ with open("experiments/impala-local.yaml") as fp:
 
     # workers
     COLAB_CPUS = 2
-    WORKERS = 4
+    WORKERS = 3
     impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
     impala_config["procgen-ppo"]["config"]["num_cpus_per_worker"] = (COLAB_CPUS-1)/(WORKERS)
