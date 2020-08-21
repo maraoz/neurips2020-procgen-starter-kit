@@ -33,8 +33,11 @@ with open("experiments/impala-local.yaml") as fp:
     impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
 
     # workers
-    impala_config["procgen-ppo"]["config"]["num_workers"] = 2
+    COLAB_CPUS = 2
+    WORKERS = 2
+    impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
+    impala_config["procgen-ppo"]["config"]["num_cpus_per_worker"] = COLAB_CPUS/(WORKERS+1)
 
     # gpu activation
     impala_config["procgen-ppo"]["config"]["num_gpus"] = 0.1
