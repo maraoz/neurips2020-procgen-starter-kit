@@ -32,7 +32,6 @@ procgen-ppo:
     model:
       custom_model: impala_cnn_tf
       custom_options: {}
-      custom_preprocessor: MyPreprocessor
     no_done_at_end: false
     normalize_actions: false
     num_cpus_for_driver: 1
