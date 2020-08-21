@@ -8,6 +8,10 @@ set -e
 export EXPERIMENT_DEFAULT="experiments/impala-baseline.yaml"
 export EXPERIMENT=${EXPERIMENT:-$EXPERIMENT_DEFAULT}
 
+pwd
+pwd
+pwd
+export PROJECT_HOME=`pwd`
 mkdir -p ~/.keras/models/
 cp ./models/resnet50v2_weights_tf_dim_ordering_tf_kernels_notop.h5 ~/.keras/models/
 

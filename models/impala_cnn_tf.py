@@ -69,8 +69,20 @@ def resnet_core(x):
     for layer in s.layers:
         layer.trainable = False
     s.build(None)
-    #print(1/0)
+
+    s.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/small')
     return s(x), resnet
+
+def small_core(x):
+    x = tf.keras.applications.resnet_v2.preprocess_input(x)
+    import os
+    home = os.getenv('PROJECT_HOME')
+    print(home)
+    full = os.path.join(home, 'models', 'small.h5')
+    print(full)
+    model = tf.keras.models.load_model(full)
+    return model(x)
+
 
 def resnet18_core(x):
     from classification_models.keras import Classifiers
@@ -91,18 +103,7 @@ def mobile_core(x):
         include_top=False,
         weights="imagenet",
     )
-    remove_n = 130
-    for i in range(remove_n):
-        mobile._layers.pop()
-        print(i, len(mobile._layers))
-    s = tf.keras.models.Model(mobile.input, mobile._layers[-1].output, name='mobile-core')
-    for layer in s.layers:
-        print('adding layer',layer.name)
-    for layer in s.layers[:]:
-        layer.trainable = False
-    s.build(None)
-
-    return s(x)
+    return mobile(x)
 
 def densenet_core(x):
     densenet = tf.keras.applications.DenseNet121(
@@ -123,13 +124,15 @@ class ImpalaCNN(TFModelV2):
     def __init__(self, obs_space, action_space, num_outputs, model_config, name):
         super().__init__(obs_space, action_space, num_outputs, model_config, name)
 
+        full = None
+
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = inputs
         # conv core
         # x = conv_core(x)
 
         # resnet core
-        x, full = resnet_core(x)
+        # x, full = resnet_core(x)
 
         # mobile core
         # x = mobile_core(x)
@@ -142,6 +145,9 @@ class ImpalaCNN(TFModelV2):
 
         # average pooling2d
         #x = tf.keras.layers.GlobalAveragePooling2D()(x)
+
+        # small core
+        x = small_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
@@ -161,7 +167,8 @@ class ImpalaCNN(TFModelV2):
         for layer in self.base_model.layers:
             print(layer.name)
         self.register_variables(self.base_model.variables)
-        self.register_variables(full.variables)
+        if full is not None:
+            self.register_variables(full.variables)
 
     def forward(self, input_dict, state, seq_lens):
         # explicit cast to float32 needed in eager
