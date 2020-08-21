@@ -58,7 +58,7 @@ def resnet_core(x):
     x = tf.keras.applications.resnet_v2.preprocess_input(x)
     resnet = tf.keras.applications.ResNet50V2(
         include_top=False,
-        weights="imagenet",
+        weights='imagenet'
     )
     remove_n = 105+46
     s = tf.keras.models.Model(resnet.input, resnet.layers[-remove_n].output, name='resnet-core')
