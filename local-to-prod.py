@@ -37,7 +37,7 @@ with open("experiments/impala-local.yaml") as fp:
     WORKERS = 2
     impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
-    impala_config["procgen-ppo"]["config"]["num_cpus_per_worker"] = COLAB_CPUS/(WORKERS+1)
+    impala_config["procgen-ppo"]["config"]["num_cpus_per_worker"] = (COLAB_CPUS-1)/(WORKERS)
 
     # gpu activation
     impala_config["procgen-ppo"]["config"]["num_gpus"] = 0.1
