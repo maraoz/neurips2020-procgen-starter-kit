@@ -1,5 +1,9 @@
 import yaml
 
+
+COLAB_CPUS = 2
+WORKERS = 3
+
 with open("experiments/impala-local.yaml") as fp:
     impala_config = yaml.safe_load(fp)
 
@@ -11,7 +15,7 @@ with open("experiments/impala-local.yaml") as fp:
     impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
 
     # workers
-    impala_config["procgen-ppo"]["config"]["num_workers"] = 6
+    impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
 
     # gpu activation
@@ -33,8 +37,6 @@ with open("experiments/impala-local.yaml") as fp:
     impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
 
     # workers
-    COLAB_CPUS = 2
-    WORKERS = 3
     impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
     impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
     impala_config["procgen-ppo"]["config"]["num_cpus_per_worker"] = (COLAB_CPUS-1)/(WORKERS)
