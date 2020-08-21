@@ -2,7 +2,7 @@ import yaml
 
 
 COLAB_CPUS = 2
-WORKERS = 3
+WORKERS = 2
 
 with open("experiments/impala-local.yaml") as fp:
     impala_config = yaml.safe_load(fp)
