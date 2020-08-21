@@ -40,7 +40,7 @@ procgen-ppo:
     num_gpus: 0.9
     num_gpus_per_worker: 0.1
     num_sgd_iter: 3
-    num_workers: 1
+    num_workers: 2
     observation_filter: NoFilter
     preprocessor_pref: deepmind
     rollout_fragment_length: 256
