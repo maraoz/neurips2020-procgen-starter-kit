@@ -2,10 +2,10 @@ import yaml
 
 
 COLAB_CPUS = 2
-WORKERS = 2
+WORKERS = 1
 SCALE_DOWN = 2
-TRAIN_BATCH = 16384/SCALE_DOWN
-SGD_MINIBATCH = 2048/SCALE_DOWN
+TRAIN_BATCH = 16384//SCALE_DOWN
+SGD_MINIBATCH = 2048//SCALE_DOWN
 
 with open("experiments/impala-local.yaml") as fp:
     config = yaml.safe_load(fp)
