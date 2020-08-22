@@ -35,12 +35,12 @@ procgen-ppo:
     no_done_at_end: false
     normalize_actions: false
     num_cpus_for_driver: 1
-    num_cpus_per_worker: 0.5
+    num_cpus_per_worker: 0.125
     num_envs_per_worker: 12
     num_gpus: 0.1
     num_gpus_per_worker: 0.01
     num_sgd_iter: 3
-    num_workers: 2
+    num_workers: 8
     observation_filter: NoFilter
     preprocessor_pref: deepmind
     rollout_fragment_length: 256
