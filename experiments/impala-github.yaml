@@ -35,21 +35,21 @@ procgen-ppo:
     no_done_at_end: false
     normalize_actions: false
     num_cpus_for_driver: 1
-    num_cpus_per_worker: 0.5
+    num_cpus_per_worker: 1.0
     num_envs_per_worker: 12
     num_gpus: 0.1
     num_gpus_per_worker: 0.01
     num_sgd_iter: 3
-    num_workers: 2
+    num_workers: 1
     observation_filter: NoFilter
     preprocessor_pref: deepmind
     rollout_fragment_length: 256
     seed: null
-    sgd_minibatch_size: 1024.0
+    sgd_minibatch_size: 1024
     soft_horizon: false
     synchronize_filters: true
     timesteps_per_iteration: 0
-    train_batch_size: 8192.0
+    train_batch_size: 8192
     use_pytorch: false
     vf_clip_param: 0.2
     vf_loss_coeff: 0.5
