@@ -76,7 +76,7 @@ def resnet_core(x):
 def small_core(x):
     x = tf.keras.applications.resnet_v2.preprocess_input(x)
     import os
-    home = os.getenv('PROJECT_HOME')
+    home = os.getenv('PROJECT_HOME', '/home/aicrowd')
     print(home)
     full = os.path.join(home, 'models', 'small.h5')
     print(full)
