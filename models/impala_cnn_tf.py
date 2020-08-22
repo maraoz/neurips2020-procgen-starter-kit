@@ -81,8 +81,6 @@ def small_core(x):
     full = os.path.join(home, 'models', 'small.h5')
     print(full)
     model = tf.keras.models.load_model(full)
-    for layer in model.layers:
-        layer.trainable = False
     return model(x)
 
 
