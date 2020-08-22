@@ -3,48 +3,51 @@ import yaml
 
 COLAB_CPUS = 2
 WORKERS = 2
+SCALE_DOWN = 2
+TRAIN_BATCH = 16384/SCALE_DOWN
+SGD_MINIBATCH = 2048/SCALE_DOWN
 
 with open("experiments/impala-local.yaml") as fp:
-    impala_config = yaml.safe_load(fp)
+    config = yaml.safe_load(fp)
 
     # steps
-    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 8000000
+    config["procgen-ppo"]["stop"]["timesteps_total"] = 8000000
 
     # memory intensive stuff
-    impala_config["procgen-ppo"]["config"]["train_batch_size"] = 16384
-    impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
+    config["procgen-ppo"]["config"]["train_batch_size"] = TRAIN_BATCH
+    config["procgen-ppo"]["config"]["sgd_minibatch_size"] = SGD_MINIBATCH
 
     # workers
-    impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
-    impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
+    config["procgen-ppo"]["config"]["num_workers"] = WORKERS
+    config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
 
     # gpu activation
-    impala_config["procgen-ppo"]["config"]["num_gpus"] = 0.2
-    impala_config["procgen-ppo"]["config"]["num_gpus_per_worker"] = 0.01
+    config["procgen-ppo"]["config"]["num_gpus"] = 0.2
+    config["procgen-ppo"]["config"]["num_gpus_per_worker"] = 0.01
 
     with open("experiments/impala-baseline.yaml", "w") as fp:
-        yaml.dump(impala_config, fp)
+        yaml.dump(config, fp)
 
 with open("experiments/impala-local.yaml") as fp:
-    impala_config = yaml.safe_load(fp)
+    config = yaml.safe_load(fp)
 
     # steps
-    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 100000
-    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 1000000
-    impala_config["procgen-ppo"]["checkpoint_freq"] = 10
+    config["procgen-ppo"]["stop"]["timesteps_total"] = 100000
+    config["procgen-ppo"]["stop"]["timesteps_total"] = 1000000
+    config["procgen-ppo"]["checkpoint_freq"] = 10
 
     # memory intensive stuff
-    impala_config["procgen-ppo"]["config"]["train_batch_size"] = 16384
-    impala_config["procgen-ppo"]["config"]["sgd_minibatch_size"] = 2048
+    config["procgen-ppo"]["config"]["train_batch_size"] = TRAIN_BATCH
+    config["procgen-ppo"]["config"]["sgd_minibatch_size"] = SGD_MINIBATCH
 
     # workers
-    impala_config["procgen-ppo"]["config"]["num_workers"] = WORKERS
-    impala_config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
-    impala_config["procgen-ppo"]["config"]["num_cpus_per_worker"] = (COLAB_CPUS-1)/(WORKERS)
+    config["procgen-ppo"]["config"]["num_workers"] = WORKERS
+    config["procgen-ppo"]["config"]["num_envs_per_worker"] = 12
+    config["procgen-ppo"]["config"]["num_cpus_per_worker"] = (COLAB_CPUS-1)/(WORKERS)
 
     # gpu activation
-    impala_config["procgen-ppo"]["config"]["num_gpus"] = 0.1
-    impala_config["procgen-ppo"]["config"]["num_gpus_per_worker"] = 0.01
+    config["procgen-ppo"]["config"]["num_gpus"] = 0.1
+    config["procgen-ppo"]["config"]["num_gpus_per_worker"] = 0.01
 
     with open("experiments/impala-github.yaml", "w") as fp:
-        yaml.dump(impala_config, fp)
+        yaml.dump(config, fp)
