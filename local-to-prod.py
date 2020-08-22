@@ -30,6 +30,7 @@ with open("experiments/impala-local.yaml") as fp:
 
     # steps
     impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 100000
+    impala_config["procgen-ppo"]["stop"]["timesteps_total"] = 1000000
     impala_config["procgen-ppo"]["checkpoint_freq"] = 10
 
     # memory intensive stuff
