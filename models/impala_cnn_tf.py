@@ -87,6 +87,17 @@ def resnet18_save(x):
     resnet18.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/resnet18.h5')
     return resnet18(x)
 
+
+def prune_and_save(model):
+    remove_n=22
+    s = tf.keras.models.Model(model.input, model.layers[-remove_n].output)
+    for layer in s.layers:
+        print('adding layer',layer.name)
+
+    s.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/resnet18-stage3.h5')
+    print(1/0)
+
+
 def presaved_core(name):
     def named_core(x):
         fullpath = os.path.join(home, 'models', name+'.h5')
@@ -95,11 +106,13 @@ def presaved_core(name):
             print(name, layer.name)
             layer.trainable = False
 
+        #prune_and_save(model)
         return model(x)
     return named_core
 
 small_core = presaved_core('small')
 resnet18_core = presaved_core('resnet18')
+resnet18_stage3_core = presaved_core('resnet18-stage3')
 
 def mobile_core(x):
 
@@ -147,7 +160,7 @@ class ImpalaCNN(TFModelV2):
         # x = densenet_core(x)
 
         # resnet18 core
-        x = resnet18_core(x)
+        x = resnet18_stage3_core(x)
 
         # average pooling2d
         #x = tf.keras.layers.GlobalAveragePooling2D()(x)
