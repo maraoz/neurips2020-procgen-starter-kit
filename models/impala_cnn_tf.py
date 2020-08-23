@@ -94,6 +94,7 @@ def presaved_core(name):
         for layer in model.layers:
             print(name, layer.name)
             layer.trainable = False
+
         return model(x)
     return named_core
 
