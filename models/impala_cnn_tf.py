@@ -1,10 +1,14 @@
 from ray.rllib.models.tf.tf_modelv2 import TFModelV2
 from ray.rllib.utils.framework import try_import_tf
 from ray.rllib.models import ModelCatalog
+import os
 
 
 tf = try_import_tf()
 
+
+home = os.getenv('PROJECT_HOME', '/home/aicrowd')
+print('home', home)
 
 def conv_layer(spec, name):
     full_name = name + "-" + str(spec['depth']) + "-" + str(spec['kernel']) + "-" +str(spec['strides'])
@@ -57,36 +61,22 @@ def conv_core(x):
 def resnet_core(x):
     x = tf.keras.applications.resnet_v2.preprocess_input(x)
     resnet = tf.keras.applications.ResNet50V2(
-        include_top=False,
+        include_top=True,
         weights='imagenet'
     )
     for layer in resnet.layers:
         layer.trainable = False
-    remove_n = 105+46
+    remove_n = 1#105+46
     s = tf.keras.models.Model(resnet.input, resnet.layers[-remove_n].output, name='resnet-core')
     for layer in s.layers:
         print('adding layer',layer.name)
     for layer in s.layers:
         layer.trainable = False
-    s.build(None)
 
-    s.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/small')
+    #s.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/small')
     return s(x), resnet
 
-def small_core(x):
-    x = tf.keras.applications.resnet_v2.preprocess_input(x)
-    import os
-    home = os.getenv('PROJECT_HOME', '/home/aicrowd')
-    print(home)
-    full = os.path.join(home, 'models', 'small.h5')
-    print(full)
-    model = tf.keras.models.load_model(full)
-    for layer in model.layers:
-        layer.trainable = False
-    return model(x)
-
-
-def resnet18_core(x):
+def resnet18_save(x):
     from classification_models.keras import Classifiers
     ResNet18, preprocess_input = Classifiers.get('resnet18')
     x = preprocess_input(x)
@@ -94,8 +84,21 @@ def resnet18_core(x):
     for layer in resnet18.layers:
         print("Layer '%s' " % layer.name)  
         layer.trainable = False
+    resnet18.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/resnet18.h5')
     return resnet18(x)
 
+def presaved_core(name):
+    def named_core(x):
+        fullpath = os.path.join(home, 'models', name+'.h5')
+        model = tf.keras.models.load_model(fullpath)
+        for layer in model.layers:
+            print(name, layer.name)
+            layer.trainable = False
+        return model(x)
+    return named_core
+
+small_core = presaved_core('small')
+resnet18_core = presaved_core('resnet18')
 
 def mobile_core(x):
 
@@ -134,7 +137,7 @@ class ImpalaCNN(TFModelV2):
         # x = conv_core(x)
 
         # resnet core
-        # x, full = resnet_core(x)
+        #x, full = resnet_core(x)
 
         # mobile core
         # x = mobile_core(x)
@@ -143,13 +146,13 @@ class ImpalaCNN(TFModelV2):
         # x = densenet_core(x)
 
         # resnet18 core
-        #x = resnet18_core(x)
+        x = resnet18_core(x)
 
         # average pooling2d
         #x = tf.keras.layers.GlobalAveragePooling2D()(x)
 
         # small core
-        x = small_core(x)
+        #x = small_core(x)
 
         # flatten relu
         x = tf.keras.layers.Flatten()(x)
