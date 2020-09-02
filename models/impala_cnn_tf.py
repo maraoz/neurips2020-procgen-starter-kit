@@ -24,9 +24,7 @@ def residual_block(x, spec, prefix):
     #first['kernel'] = 1
     #first['strides'] = 1
     x = tf.keras.layers.ReLU()(x)
-    x = conv_layer(first, name=prefix + "_conv0")(x)
-    x = tf.keras.layers.BatchNormalization()(x)
-    x = tf.keras.layers.ReLU()(x)
+    x = tf.keras.layers.Dense(units=first['depth']**2, activation="relu", name=prefix + "_dense")(x)
     x = conv_layer(spec, name=prefix + "_conv1")(x)
     x = tf.keras.layers.BatchNormalization()(x)
     return x + inputs
@@ -49,9 +47,8 @@ def conv_core(x):
 
     specs = [
         {"depth": 16, "kernel": 3, "strides": 1},
-        {"depth": 16, "kernel": 3, "strides": 1},
-        {"depth": 16, "kernel": 3, "strides": 1},
-        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 32, "kernel": 3, "strides": 1},
+        {"depth": 32, "kernel": 3, "strides": 1},
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
@@ -172,7 +169,7 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=384, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
 
         # outputs
