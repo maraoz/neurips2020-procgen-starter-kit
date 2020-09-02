@@ -21,8 +21,8 @@ def residual_block(x, spec, prefix):
     inputs = x
     assert inputs.get_shape()[-1].value == spec['depth']
     first = spec.copy()
-    first['kernel'] = 1
-    first['strides'] = 1
+    #first['kernel'] = 1
+    #first['strides'] = 1
     x = tf.keras.layers.ReLU()(x)
     x = conv_layer(first, name=prefix + "_conv0")(x)
     x = tf.keras.layers.BatchNormalization()(x)
@@ -49,8 +49,9 @@ def conv_core(x):
 
     specs = [
         {"depth": 16, "kernel": 3, "strides": 1},
-        {"depth": 32, "kernel": 3, "strides": 1},
-        {"depth": 32, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
+        {"depth": 16, "kernel": 3, "strides": 1},
     ]
     for i, spec in enumerate(specs):
         x = conv_sequence(x, spec, prefix=f"seq{i}")
