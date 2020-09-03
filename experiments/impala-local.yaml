@@ -130,9 +130,9 @@ procgen-ppo:
         # === Settings for Model ===
         ################################################
         ################################################
-        model: {"use_lstm": true, "dim": 64, "conv_filters": [[16, [4, 4], 2], [32, [4, 4], 2], [512, [11, 11], 6]]}
+        model: #{"use_lstm": true, "dim": 64, "conv_filters": [[16, [4, 4], 2], [32, [4, 4], 2], [512, [11, 11], 6]]}
           #custom_preprocessor: MyPreprocessor
-          #custom_model: impala_cnn_tf
+          custom_model: impala_cnn_tf
             # Extra options to pass to custom class
             #custom_options: {}
 

@@ -13,10 +13,15 @@ class MyPreprocessorClass(Preprocessor):
 
     last_obs = None
 
+    N_FRAMES = 5
+
     def _init_shape(self, obs_space, options):
         print('custom_preprocesor')
-        print(obs_space, obs_space.shape)
-        return obs_space.shape  # New shape after preprocessing
+        print(obs_space, obs_space.shape, type(obs_space.shape))
+        new_shape = (self.N_FRAMES,)+ obs_space.shape  # New shape after preprocessing
+        print(new_shape)
+        print(1/0)
+        return new_shape
 
     def transform(self, obs):
         if self.last_obs is None:

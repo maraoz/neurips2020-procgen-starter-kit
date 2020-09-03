@@ -38,6 +38,7 @@ def conv_sequence(x, spec, prefix):
     x = tf.keras.layers.MaxPool2D(pool_size=3, strides=2, padding="same")(x)
     x = residual_block(x, spec, prefix=prefix + "_block0")
     x = residual_block(x, spec, prefix=prefix + "_block1")
+    x = tf.keras.layers.BatchNormalization()(x)
     return x
 
 
