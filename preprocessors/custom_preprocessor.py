@@ -24,7 +24,8 @@ class MyPreprocessorClass(Preprocessor):
 
     def transform(self, obs):
         #print(type(obs), obs.shape)
-        gs = np.dot(obs, [0.2989, 0.5870, 0.1140])
+        # (64, 64, 3)
+        gs = np.dot(obs, [0.3333, 0.3333, 0.3333])
         gs = gs.reshape(64, 64, 1)
         #print(gs, gs.shape, type(gs))
         return gs
