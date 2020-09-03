@@ -12,6 +12,14 @@ procgen-ppo:
     # For addition of custom algorithms,
     # Please refer to :
     # https://github.com/AIcrowd/neurips2020-procgen-starter-kit/blob/master/algorithms/registry.py
+    # video
+    #evaluation_interval: 1
+    #evaluation_num_workers: 1
+    #evaluation_num_episodes: 3
+    #evaluation_config:
+    #  num_envs_per_worker: 1
+    #  env_config:
+    #    render_mode: rgb_array
     ################################################
     # === Stop Conditions ===
     ################################################
