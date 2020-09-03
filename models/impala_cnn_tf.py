@@ -140,6 +140,10 @@ class ImpalaCNN(TFModelV2):
 
         full = None
 
+        print('internal obs', obs_space.shape)
+        print('internal action', action_space.shape)
+        print('internal num_outputs', num_outputs)
+
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = inputs
         # conv core
