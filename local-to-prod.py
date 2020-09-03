@@ -2,7 +2,7 @@ import yaml
 
 
 COLAB_CPUS = 2
-WORKERS = 1
+WORKERS = 2
 SCALE_DOWN = 1
 ENVS = 12//SCALE_DOWN
 TRAIN_BATCH = 16384//SCALE_DOWN
@@ -34,7 +34,7 @@ with open("experiments/impala-local.yaml") as fp:
 
     # steps
     config["procgen-ppo"]["stop"]["timesteps_total"] = 100000
-    config["procgen-ppo"]["stop"]["timesteps_total"] = 1000000
+    config["procgen-ppo"]["stop"]["timesteps_total"] = 1e6
     config["procgen-ppo"]["checkpoint_freq"] = 10
 
     # memory intensive stuff
