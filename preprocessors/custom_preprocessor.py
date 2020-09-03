@@ -3,6 +3,9 @@
 from ray.rllib.models.preprocessors import Preprocessor
 from ray.rllib.utils.framework import try_import_tf
 
+import numpy as np
+
+
 tf = try_import_tf()
 
 class MyPreprocessorClass(Preprocessor):
@@ -11,25 +14,17 @@ class MyPreprocessorClass(Preprocessor):
     Adopted from https://docs.ray.io/en/master/rllib-models.html#custom-preprocessors
     """
 
-    last_obs = None
-
-    N_FRAMES = 5
-
     def _init_shape(self, obs_space, options):
         print('custom_preprocesor')
         print(obs_space, obs_space.shape, type(obs_space.shape))
-        new_shape = (self.N_FRAMES,)+ obs_space.shape  # New shape after preprocessing
-        print(new_shape)
-        print(1/0)
+        os = obs_space.shape
+        new_shape = (os[0],os[1], 1)
+        print('new_shape', new_shape)
         return new_shape
 
     def transform(self, obs):
-        if self.last_obs is None:
-            self.last_obs = obs
-            return obs
-        delta = (obs - self.last_obs+255)/2
-        # import numpy as np
-        # print(delta.shape, np.linalg.norm(delta))
-        # print(delta)
-        self.last_obs = obs
-        return delta
+        #print(type(obs), obs.shape)
+        gs = np.dot(obs, [0.2989, 0.5870, 0.1140])
+        gs = gs.reshape(64, 64, 1)
+        #print(gs, gs.shape, type(gs))
+        return gs
