@@ -30,8 +30,21 @@ procgen-ppo:
     log_sys_usage: true
     lr: 0.0005
     model:
-      custom_model: impala_cnn_tf
-      custom_options: {}
+      conv_filters:
+      - - 16
+        - - 4
+          - 4
+        - 2
+      - - 32
+        - - 4
+          - 4
+        - 2
+      - - 512
+        - - 11
+          - 11
+        - 6
+      dim: 64
+      use_lstm: true
     no_done_at_end: false
     normalize_actions: false
     num_cpus_for_driver: 1
