@@ -84,12 +84,12 @@ def resnet18_save(x):
 
 
 def prune_and_save(model):
-    remove_n=22
+    remove_n=19
     s = tf.keras.models.Model(model.input, model.layers[-remove_n].output)
     for layer in s.layers:
         print('adding layer',layer.name)
 
-    s.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/resnet18-stage3.h5')
+    s.save('/Users/manu/git/neurips2020-procgen-starter-kit/models/resnet18-stage2.h5')
     print(1/0)
 
 
@@ -100,6 +100,7 @@ def presaved_core(name):
         for layer in model.layers:
             print(name, layer.name)
             layer.trainable = False
+        print(len(model.layers), 'presaved layers')
 
         #prune_and_save(model)
         return model(x)
@@ -108,6 +109,7 @@ def presaved_core(name):
 small_core = presaved_core('small')
 resnet18_core = presaved_core('resnet18')
 resnet18_stage3_core = presaved_core('resnet18-stage3')
+resnet18_stage2_core = presaved_core('resnet18-stage2')
 
 def mobile_core(x):
 
@@ -147,7 +149,7 @@ class ImpalaCNN(TFModelV2):
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = inputs
         # conv core
-        x = conv_core(x)
+        #x = conv_core(x)
 
         # resnet core
         #x, full = resnet_core(x)
@@ -159,23 +161,23 @@ class ImpalaCNN(TFModelV2):
         # x = densenet_core(x)
 
         # resnet18 core
-        # x = resnet18_stage3_core(x)
+        x = resnet18_stage2_core(x)
 
         # average pooling2d
-        #x = tf.keras.layers.GlobalAveragePooling2D()(x)
+        x = tf.keras.layers.GlobalAveragePooling2D()(x)
 
         # small core
         #x = small_core(x)
 
         # flatten relu
-        x = tf.keras.layers.Flatten()(x)
-        x = tf.keras.layers.ReLU()(x)
+        #x = tf.keras.layers.Flatten()(x)
+        #x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=300, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         # added
-        x = tf.keras.layers.Dropout(0.2)(x)
+        #x = tf.keras.layers.Dropout(0.2)(x)
 
         # outputs
         #print('num_outputs',num_outputs)
@@ -186,6 +188,8 @@ class ImpalaCNN(TFModelV2):
         self.base_model = tf.keras.Model(inputs, [logits, value])
         for layer in self.base_model.layers:
             print(layer.name)
+        print(len(self.base_model.layers), 'layers')
+
         self.register_variables(self.base_model.variables)
         if full is not None:
             self.register_variables(full.variables)
