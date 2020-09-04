@@ -172,10 +172,10 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=300, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         # added
-        #x = tf.keras.layers.Dropout(0.2)(x)
+        x = tf.keras.layers.Dropout(0.2)(x)
 
         # outputs
         #print('num_outputs',num_outputs)
