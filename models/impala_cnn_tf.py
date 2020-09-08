@@ -149,7 +149,7 @@ class ImpalaCNN(TFModelV2):
         inputs = tf.keras.layers.Input(shape=obs_space.shape, name="observations")
         x = inputs
         # conv core
-        #x = conv_core(x)
+        x = conv_core(x)
 
         # resnet core
         #x, full = resnet_core(x)
@@ -160,24 +160,24 @@ class ImpalaCNN(TFModelV2):
         # densenet core
         # x = densenet_core(x)
 
-        # resnet18 core
-        x = resnet18_stage2_core(x)
-
-        # average pooling2d
-        x = tf.keras.layers.GlobalAveragePooling2D()(x)
-
         # small core
         #x = small_core(x)
 
+        # resnet18 core
+        #x = resnet18_stage2_core(x)
+
+        # average pooling2d
+        #x = tf.keras.layers.GlobalAveragePooling2D()(x)
+
         # flatten relu
-        #x = tf.keras.layers.Flatten()(x)
-        #x = tf.keras.layers.ReLU()(x)
+        x = tf.keras.layers.Flatten()(x)
+        x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
+        x = tf.keras.layers.Dense(units=400, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         # added
-        #x = tf.keras.layers.Dropout(0.2)(x)
+        x = tf.keras.layers.Dropout(0.2)(x)
 
         # outputs
         #print('num_outputs',num_outputs)
