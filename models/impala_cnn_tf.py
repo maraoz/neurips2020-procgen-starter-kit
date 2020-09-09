@@ -177,7 +177,7 @@ class ImpalaCNN(TFModelV2):
         # dense
         x = SinusodialRepresentationDense(256)(x) 
         x = SinusodialRepresentationDense(256)(x) 
-        x = SinusodialRepresentationDense(256)(x) 
+        #x = SinusodialRepresentationDense(256)(x) 
         #x = tf.keras.layers.Dense(units=500, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         # added
