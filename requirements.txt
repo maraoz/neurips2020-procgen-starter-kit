@@ -4,3 +4,4 @@ tensorflow==2.3.0
 mlflow==1.8.0
 boto3==1.13.10
 git+https://github.com/qubvel/classification_models.git
+tf-siren==0.0.5

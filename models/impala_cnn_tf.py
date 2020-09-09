@@ -3,6 +3,7 @@ from ray.rllib.utils.framework import try_import_tf
 from ray.rllib.models import ModelCatalog
 import os
 
+from tf_siren import SinusodialRepresentationDense
 
 tf = try_import_tf()
 
@@ -174,15 +175,18 @@ class ImpalaCNN(TFModelV2):
         x = tf.keras.layers.ReLU()(x)
 
         # dense
-        x = tf.keras.layers.Dense(units=500, activation="relu", name="hidden")(x)
+        x = SinusodialRepresentationDense(256)(x) 
+        x = SinusodialRepresentationDense(256)(x) 
+        x = SinusodialRepresentationDense(256)(x) 
+        #x = tf.keras.layers.Dense(units=500, activation="relu", name="hidden")(x)
         #x = tf.keras.layers.Dense(units=256, activation="relu", name="hidden")(x)
         # added
-        x = tf.keras.layers.Dropout(0.2)(x)
+        #x = tf.keras.layers.Dropout(0.2)(x)
 
         # outputs
         #print('num_outputs',num_outputs)
-        logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
-        value = tf.keras.layers.Dense(units=1, name="vf")(x)
+        logits = SinusodialRepresentationDense(units=num_outputs, name="pi")(x)
+        value = SinusodialRepresentationDense(units=1, name="vf")(x)
 
         # build model
         self.base_model = tf.keras.Model(inputs, [logits, value])
