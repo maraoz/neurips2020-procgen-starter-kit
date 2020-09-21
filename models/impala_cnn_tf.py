@@ -185,8 +185,8 @@ class ImpalaCNN(TFModelV2):
 
         # outputs
         #print('num_outputs',num_outputs)
-        logits = SinusodialRepresentationDense(units=num_outputs, name="pi")(x)
-        value = SinusodialRepresentationDense(units=1, name="vf")(x)
+        logits = tf.keras.layers.Dense(units=num_outputs, name="pi")(x)
+        value = tf.keras.layers.Dense(units=1, name="vf")(x)
 
         # build model
         self.base_model = tf.keras.Model(inputs, [logits, value])
